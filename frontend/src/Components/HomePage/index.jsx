@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Card from "../Common/Card";
 import Icon from "../Common/Icon";
@@ -6,28 +6,38 @@ import { NavLink as Link } from "react-router-dom";
 import Searchbar from "./Searchbar";
 
 import { categorize, filter } from "../../Utils/certificates";
-import { useCertificates } from "../../Context/Certificates";
+import { getMyCertificates } from "../../Services/backend";
 
 function Home() {
-  const { certificates } = useCertificates();
+  const [certificates, setCertificates] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const displayCertificates = categorize(filter(searchQuery, certificates));
+  const fetchCertificates = async () => {
+    const certificates = await getMyCertificates();
+    if (certificates instanceof Error) return alert(certificates.message);
+    setCertificates(certificates);
+  };
+
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
+
+  const categorizedCertificates = categorize(filter(searchQuery, certificates));
 
   return (
-    <>
-      <div className="flex justify-between items-center ">
+    <div className="w-full h-screen page home-page-bg">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[--primary-color]">
-          Welcome Back Ezhil
+          Welcome Back Delcy
         </h1>
         <Searchbar onSearch={setSearchQuery} value={searchQuery} />
       </div>
 
-      {displayCertificates.length ? (
-        displayCertificates.map((category) => (
+      {categorizedCertificates.length ? (
+        categorizedCertificates.map((category) => (
           <div
             className="container flex flex-col gap-4 py-10"
-            key={category.name}
+            key={category.id}
           >
             <h1 className="font-medium text-xl">
               {category.name} ({category.certificates.length})
@@ -36,7 +46,7 @@ function Home() {
               {category.certificates.map((certificate) => (
                 <Card key={certificate.id} {...certificate} />
               ))}
-              <Card type="new" category={category.name} />
+              <Card type="new" category={category.id} />
             </div>
           </div>
         ))
@@ -49,7 +59,7 @@ function Home() {
           <Icon name="add" />
         </div>
       </Link>
-    </>
+    </div>
   );
 }
 

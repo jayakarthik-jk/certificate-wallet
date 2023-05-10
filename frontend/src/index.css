@@ -29,8 +29,29 @@ body {
   top: 0;
   left: 5svw;
   transition: all;
-  transition-duration: 1s;
+  transition-duration: 500ms;
   min-height: 100svh;
+}
+
+.page {
+  padding-top: 6rem;
+  min-height: 100vh;
+}
+
+.home-page-bg {
+  background-image: url(/background-3.svg);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.upload-page-bg {
+  background-image: url(/circle-bg.svg);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .side-navbar {
@@ -41,7 +62,7 @@ body {
   left: 0;
   background: var(--primary-color);
   transition: all;
-  transition-duration: 1s;
+  transition-duration: 500ms;
 }
 
 .side-navbar:hover {
@@ -90,7 +111,7 @@ body {
 .nav-link-text {
   position: relative;
   transition: all;
-  transition-duration: 1s;
+  transition-duration: 500ms;
   left: 100%;
   color: white;
 }
@@ -105,4 +126,112 @@ body {
   100% {
     transform: translateY(0);
   }
+}
+
+.card:hover > .cover {
+  opacity: 0.3;
+}
+.card:hover > .card-title {
+  opacity: 1;
+}
+
+.login input,
+.signup input {
+  padding: 12px 0px;
+  width: 350px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+input:focus {
+  outline: 2px solid var(--secondary-color);
+}
+
+.login {
+  transition: all;
+  transition-duration: 1s;
+}
+
+.login [data-side="even"] > :last-child {
+  transform: translateX(100vw);
+}
+
+.signup-animate [data-side="even"] > :first-child {
+  animation: center-to-left 1s both;
+}
+.signup-animate [data-side="even"] > :last-child {
+  animation: right-to-center 1s both;
+}
+.login-animate [data-side="even"] > :first-child {
+  animation: left-to-center 1s both;
+}
+.login-animate [data-side="even"] > :last-child {
+  animation: center-to-right 1s both;
+}
+
+.signup-animate [data-side="odd"] > :first-child {
+  animation: center-to-right 1s both;
+}
+.signup-animate [data-side="odd"] > :last-child {
+  animation: left-to-center 1s both;
+}
+.login-animate [data-side="odd"] > :first-child {
+  animation: right-to-center 1s both;
+}
+.login-animate [data-side="odd"] > :last-child {
+  animation: center-to-left 1s both;
+}
+
+@keyframes center-to-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+}
+
+@keyframes center-to-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes left-to-center {
+  from {
+    opacity: 0;
+    transform: translateX(-100vw);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes right-to-center {
+  from {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.upload-page label {
+  font-size: larger;
+}
+
+.upload-page .required::after {
+  content: " *";
+  color: red;
+  font-weight: bold;
 }

@@ -1,26 +1,39 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import Home from "./Components/HomePage";
-import Search from "./Components/SearchPage";
-import Importants from "./Components/ImportantsPage";
-import About from "./Components/AboutPage";
-import SideNavbar from "./Components/Common/SideNavbar";
+import HomePage from "./Components/HomePage";
+import ImportantsPage from "./Components/ImportantsPage";
+import AboutPage from "./Components/AboutPage";
 import CertificatePage from "./Components/CertificatePage";
 import UploadPage from "./Components/UploadPage";
+import LoginPage from "./Components/LoginPage";
+import SideNavbar from "./Components/Common/SideNavbar";
+
+import { useUser } from "./Context/User";
 
 function App() {
+  const { user } = useUser();
   return (
     <>
-      <SideNavbar />
-      <main className="main bg-[--bg-color] pt-24 px-8">
+      {user && <SideNavbar />}
+      <main
+        className={`bg-[--bg-color] min-h-screen ${user ? "main px-8" : ""}`}
+      >
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search/:query" element={<Search />} />
-          <Route path="importants" element={<Importants />} />
-          <Route path="about" element={<About />} />
-          <Route path="certificate/new" element={<UploadPage />} />
-          <Route path="certificate/:id" element={<CertificatePage />} />
-          <Route path="*" element={<div>404</div>} />
+          {user ? (
+            <>
+              <Route path="/" element={<HomePage />} />
+              <Route path="importants" element={<ImportantsPage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="certificate/new" element={<UploadPage />} />
+              <Route path="certificate/:id" element={<CertificatePage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
+          )}
         </Routes>
       </main>
     </>

@@ -1,10 +1,10 @@
 import { BrowserRouter } from "react-router-dom";
-import { CertificatesProvider } from "./Certificates";
+import UserProvider from "./User";
 
 function Context({ children }) {
   return (
     <BrowserRouter>
-      <CertificatesProvider>{children}</CertificatesProvider>
+      <UserProvider>{children}</UserProvider>
     </BrowserRouter>
   );
 }

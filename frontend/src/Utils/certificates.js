@@ -6,17 +6,21 @@ export const filter = (searchText, certificates) => {
 };
 
 export const categorize = (certificates) => {
-  const categories = Object.entries(
-    certificates.reduce((acc, certificate) => {
-      const { category } = certificate;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(certificate);
-      return acc;
-    }, {})
-  ).map(([name, certificates]) => ({ name, certificates }));
-  return categories;
+  const categorizedCertificates = certificates.reduce((acc, certificate) => {
+    const { category } = certificate;
+    const categoryIndex = acc.findIndex((c) => c.id === category.id);
+    if (categoryIndex === -1) {
+      acc.push({
+        id: category.id,
+        name: category.name,
+        certificates: [certificate],
+      });
+    } else {
+      acc[categoryIndex].certificates.push(certificate);
+    }
+    return acc;
+  }, []);
+  return categorizedCertificates;
 };
 
 export const sort = (certificates) => {

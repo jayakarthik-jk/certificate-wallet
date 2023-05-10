@@ -1,16 +1,26 @@
+import { useState, useEffect } from "react";
 import Card from "../Common/Card";
-
 import { categorize } from "../../Utils/certificates";
-import { useCertificates } from "../../Context/Certificates";
+import { getMyImportantCertificates } from "../../Services/backend";
 
 function Importants() {
-  const { certificates } = useCertificates();
+  const [certificates, setCertificates] = useState([]);
+
+  const fetchCertificates = async () => {
+    const certificates = await getMyImportantCertificates();
+    if (certificates instanceof Error) return alert(certificates.message);
+    setCertificates(certificates);
+  };
+
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
 
   const displayCertificates = categorize(
     certificates.filter((certificate) => certificate.isImportant)
   );
   return (
-    <>
+    <div className="page">
       <h1 className="text-3xl font-bold text-[--primary-color]">
         Important Certificates
       </h1>
@@ -33,7 +43,7 @@ function Importants() {
       ) : (
         <h1 className="py-8">Oops... No Importants found</h1>
       )}
-    </>
+    </div>
   );
 }
 
