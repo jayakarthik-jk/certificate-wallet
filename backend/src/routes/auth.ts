@@ -14,6 +14,7 @@ const loginLimiter = rateLimit({
 
 router.post("/login", loginLimiter, async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password)
     return res.status(400).json({ error: "missing credentials" });
   const user = await db.login(email, password);
@@ -32,6 +33,8 @@ router.post("/login", loginLimiter, async (req, res) => {
 
 router.post("/signup", loginLimiter, async (req, res) => {
   const { email, name, password } = req.body;
+  if (!email || !name || !password)
+    return res.status(400).json({ error: "missing credentials" });
   const user = await db.register(email, name, password);
   if (user instanceof Error)
     return res.status(400).json({ error: user.message });
@@ -48,3 +51,8 @@ router.post("/signup", loginLimiter, async (req, res) => {
 });
 
 export default router;
+
+router.post("/logout", async (req, res) => {
+  res.clearCookie("X-Auth-Token");
+  return res.status(200).json({ message: "logged out" });
+});

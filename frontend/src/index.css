@@ -36,10 +36,11 @@ body {
 .page {
   padding-top: 6rem;
   min-height: 100vh;
+  background-color: var(--bg-color);
 }
 
 .home-page-bg {
-  background-image: url(/background-3.svg);
+  background-image: url(./Assets/background-3.svg);
   background-repeat: no-repeat;
   background-position: right top;
   background-size: cover;
@@ -47,9 +48,17 @@ body {
 }
 
 .upload-page-bg {
-  background-image: url(/circle-bg.svg);
+  background-image: url(./Assets/circle-bg.svg);
   background-repeat: no-repeat;
   background-position: right top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.important-page-bg {
+  background-image: url(./Assets/important-bg.svg);
+  background-repeat: no-repeat;
+  background-position: left top;
   background-size: cover;
   background-attachment: fixed;
 }

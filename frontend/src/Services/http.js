@@ -5,6 +5,9 @@ async function post(url, body) {
     const response = await fetch(CERTIFICATE_WALLET_BACKEND_URL + url, {
       method: "POST",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     });
     const data = await response.json();
@@ -20,6 +23,9 @@ export async function get(url) {
   try {
     const response = await fetch(CERTIFICATE_WALLET_BACKEND_URL + url, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
       credentials: "include",
     });
     const data = await response.json();
@@ -79,10 +85,26 @@ async function put(url, body) {
   }
 }
 
+async function deleteRequest(url) {
+  try {
+    const response = await fetch(CERTIFICATE_WALLET_BACKEND_URL + url, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok) return new Error(data.error);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 export default {
   post,
   get,
   formdata,
   getDownload,
   put,
+  delete: deleteRequest,
 };

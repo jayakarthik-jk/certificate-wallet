@@ -8,6 +8,8 @@ export const login = (email, password) =>
 export const signup = (name, email, password) =>
   http.post("/auth/signup", { name, email, password });
 
+export const logout = () => http.post("/auth/logout");
+
 export const getMyCertificates = () => http.get("/certificates");
 
 export const getCertificate = (id) => http.get(`/certificates/${id}`);
@@ -26,3 +28,5 @@ export const createCertificate = (certificate) =>
 
 export const downloadCertificate = (id) =>
   http.getDownload(`/certificates/${id}/download`);
+
+export const deleteCertificate = (id) => http.delete(`/certificates/${id}`);

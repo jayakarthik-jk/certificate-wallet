@@ -2,8 +2,11 @@ import { useRef, useState } from "react";
 import { login, signup } from "../../Services/backend";
 import { useUser } from "../../Context/User";
 
+import Loading from "../Common/Loading";
+
 function LoginPage() {
   const [animate, setAnimate] = useState(false);
+  const [loading, setLoading] = useState(false);
   const loginEmail = useRef();
   const loginPassword = useRef();
   const signupName = useRef();
@@ -12,29 +15,31 @@ function LoginPage() {
   const { setUser } = useUser();
 
   const handleLogin = async () => {
+    setLoading(true);
     const response = await login(
       loginEmail.current.value,
       loginPassword.current.value
     );
+    setLoading(false);
     if (response instanceof Error) return alert(response.message);
-    console.log(response);
     setUser(response);
   };
 
   const handleSignup = async () => {
+    setLoading(true);
     const response = await signup(
       signupName.current.value,
       signupEmail.current.value,
       signupPassword.current.value
     );
+    setLoading(false);
     if (response instanceof Error) return alert(response.message);
-    console.log(response);
     setUser(response);
   };
 
   return (
     <div
-      className={`login flex flex-col justify-center items-center gap-8 h-screen bg-[url(/background.svg)] bg-no-repeat bg-cover bg-center ${
+      className={`login flex flex-col justify-center items-center gap-8 h-screen bg-[url(./Assets/background.svg)] bg-no-repeat bg-cover bg-center ${
         animate ? "signup-animate" : "login-animate"
       }`}
     >
@@ -86,8 +91,9 @@ function LoginPage() {
         <div className="absolute">
           don't have an account&nbsp;
           <button
-            className="text-[--primary-color]"
+            className="text-[--primary-color] disabled:opacity-50"
             onClick={() => setAnimate(!animate)}
+            disabled={loading}
           >
             Signup
           </button>
@@ -95,13 +101,15 @@ function LoginPage() {
         <div>
           Already have an account&nbsp;
           <button
-            className="text-[--primary-color]"
+            className="text-[--primary-color] disabled:opacity-50"
             onClick={() => setAnimate(!animate)}
+            disabled={loading}
           >
             Login
           </button>
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   );
 }

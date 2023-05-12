@@ -3,9 +3,9 @@ import multer from "multer";
 import db from "../database";
 import auth from "../middlewares/auth";
 import { decryptFile, encryptFile } from "../utils/encryptions";
-import generateThumbnail from "../utils/thumbnail";
+import { generateThumbnail, deleteThumbnail } from "../utils/thumbnail";
 import { createCertificate } from "../database/certificates";
-
+import fs from "fs";
 const router = Router();
 
 const upload = multer({
@@ -39,6 +39,22 @@ router.get("/:id", auth, async (req, res) => {
   res.status(200).json(certificate);
 });
 
+router.delete("/:id", auth, async (req, res) => {
+  const id = req.params.id;
+  const certificate = await db.getCertificate(id);
+  if (certificate instanceof Error)
+    return res.status(400).json({ error: certificate.message });
+  const decryptedFile = decryptFile(certificate.url);
+  if (!decryptedFile)
+    return res.status(500).json({ error: "Error decrypting file" });
+  const deletedCertificate = await db.deleteCertificate(id);
+  if (deletedCertificate instanceof Error)
+    return res.status(500).json({ error: "Something went wrong" });
+  await deleteThumbnail(deletedCertificate.url);
+  fs.unlinkSync(decryptedFile);
+  res.status(200).json(deletedCertificate);
+});
+
 router.post("/:id/important", auth, async (req, res) => {
   const id = req.params.id;
   const updatedCategory = await db.toggleImportant(id);
@@ -66,10 +82,10 @@ router.post("/", auth, upload.single("file"), async (req, res) => {
   if (!file) return res.status(400).json({ error: "File not found" });
   if (!user) return res.status(400).json({ error: "User not found" });
 
-  const thumbnail = await generateThumbnail(file.path);
+  const encryptedFilePath = encryptFile(file.path);
+  const thumbnail = await generateThumbnail(encryptedFilePath);
   if (!thumbnail)
     return res.status(500).json({ error: "Error generating thumbnail" });
-  const encryptedFilePath = encryptFile(file.path);
 
   const { name, isImportant, expiresOn, categoryId } = req.body;
 

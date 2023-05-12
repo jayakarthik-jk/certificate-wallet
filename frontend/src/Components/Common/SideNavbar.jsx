@@ -1,5 +1,7 @@
 import { NavLink as Link } from "react-router-dom";
 import Icon from "./Icon";
+import { useUser } from "../../Context/User";
+import { logout } from "../../Services/backend";
 
 function Navlink({ children: label, icon, route }) {
   return (
@@ -22,13 +24,23 @@ function SideNavbar() {
       route: "/about",
     },
   ];
-
+  const { setUser } = useUser();
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result instanceof Error) return alert("something went wrong");
+    setUser(null);
+  };
   return (
     <div className="side-navbar h-full flex flex-col justify-between">
       <div>
         <div className="profile-icon flex items-center">
           <div className="flex justify-center items-center icon-container py-10">
-            <div className="flex justify-center items-center overflow-hidden bg-[--secondary-color] w-10 h-10 rounded-[35%]"></div>
+            <div className="flex justify-center items-center overflow-hidden bg-[--secondary-color] w-10 h-10 rounded-[35%]">
+              <Icon name="cloud-arrow-up" />
+            </div>
+          </div>
+          <div className="nav-link whitespace-nowrap font-bold text-xl">
+            <div className="nav-link-text">Wallet</div>
           </div>
         </div>
         {navLinks.map((link) => (
@@ -43,7 +55,9 @@ function SideNavbar() {
             <Icon name="right-from-bracket" />
           </div>
         </div>
-        <div className="nav-link-text nav-link">logout</div>
+        <div className="nav-link-text nav-link" onClick={handleLogout}>
+          logout
+        </div>
       </div>
     </div>
   );

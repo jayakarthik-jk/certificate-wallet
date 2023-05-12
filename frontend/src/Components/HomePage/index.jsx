@@ -7,13 +7,19 @@ import Searchbar from "./Searchbar";
 
 import { categorize, filter } from "../../Utils/certificates";
 import { getMyCertificates } from "../../Services/backend";
+import { useUser } from "../../Context/User";
+import Loading from "../Common/Loading";
 
 function Home() {
   const [certificates, setCertificates] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const { user } = useUser();
   const fetchCertificates = async () => {
+    setLoading(true);
     const certificates = await getMyCertificates();
+    setLoading(false);
     if (certificates instanceof Error) return alert(certificates.message);
     setCertificates(certificates);
   };
@@ -25,10 +31,10 @@ function Home() {
   const categorizedCertificates = categorize(filter(searchQuery, certificates));
 
   return (
-    <div className="w-full h-screen page home-page-bg">
+    <div className="min-w-full min-h-screen page home-page-bg">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-[--primary-color]">
-          Welcome Back Delcy
+          Welcome Back {user?.name}
         </h1>
         <Searchbar onSearch={setSearchQuery} value={searchQuery} />
       </div>
@@ -59,6 +65,7 @@ function Home() {
           <Icon name="add" />
         </div>
       </Link>
+      {loading && <Loading />}
     </div>
   );
 }

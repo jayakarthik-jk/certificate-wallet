@@ -6,23 +6,29 @@ import {
   downloadCertificate,
   getCertificate,
   toggleImportant,
+  deleteCertificate,
 } from "../../Services/backend";
 import { CERTIFICATE_WALLET_BACKEND_URL } from "../../Services/http";
+import Loading from "../Common/Loading";
 
 function CertificatePage() {
   const { id } = useParams();
-
+  const [loading, setLoading] = useState(true);
   const [certificate, setCertificate] = useState();
   const [isImportant, setIsImportant] = useState(false);
   const navigate = useNavigate();
 
   const handleToggleImportant = async () => {
+    setLoading(true);
     const updatedCertificate = await toggleImportant(id);
+    setLoading(false);
     setIsImportant(updatedCertificate.isImportant);
   };
 
   const handleDownload = async () => {
+    setLoading(true);
     const blob = await downloadCertificate(id);
+    setLoading(false);
     if (blob instanceof Error) return alert("Error downloading certificate");
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -31,9 +37,19 @@ function CertificatePage() {
     a.click();
   };
 
+  const handleDelete = async () => {
+    setLoading(true);
+    const deleted = await deleteCertificate(id);
+    setLoading(false);
+    if (deleted instanceof Error) return alert("Error deleting certificate");
+    navigate("/");
+  };
+
   useEffect(() => {
     const fetchCertificate = async () => {
+      setLoading(true);
       const certificate = await getCertificate(id);
+      setLoading(false);
       if (!certificate || certificate instanceof Error) return navigate("/");
       setIsImportant(certificate.isImportant);
       setCertificate(certificate);
@@ -66,7 +82,13 @@ function CertificatePage() {
             </div>
             <div className="font-normal">
               {certificate?.expiresOn
-                ? "Expires on " + certificate?.expiresOn
+                ? "Expires on " +
+                  new Date(certificate?.expiresOn).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
                 : "No Expiry"}
             </div>
             <div className="font-normal">
@@ -98,9 +120,17 @@ function CertificatePage() {
               <div className="text-white">Download</div>
               <Icon name="download" />
             </div>
+            <div
+              className="w-fit px-4 py-3 flex justify-center items-center gap-2 bg-[--primary-color] rounded-xl cursor-pointer"
+              onClick={handleDelete}
+            >
+              <div className="text-white">Delete</div>
+              <Icon name="trash" />
+            </div>
           </div>
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   );
 }

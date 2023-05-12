@@ -79,3 +79,14 @@ export async function createCertificate({
   });
   return certificate;
 }
+
+export async function deleteCertificate(id: string) {
+  const certificate = await client.certificates.findUnique({
+    where: { id },
+  });
+  if (!certificate) return new Error("certificate not found");
+  await client.certificates.delete({
+    where: { id },
+  });
+  return certificate;
+}

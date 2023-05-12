@@ -11,3 +11,14 @@ const errorHandler = (
 };
 
 export default errorHandler;
+
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", () => {
+  console.log("UNHANDLED REJECTION! 💥 Shutting down...");
+  process.exit(1);
+});

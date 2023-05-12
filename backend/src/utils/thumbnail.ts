@@ -1,11 +1,11 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 import { join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, unlink } from "fs";
 
 const execAsync = promisify(exec);
 
-const generateThumbnail = async (pdfFilePath: string) => {
+export const generateThumbnail = async (pdfFilePath: string) => {
   pdfFilePath = join(__dirname, "..", "..", pdfFilePath);
   const thumbnailPath = join(__dirname, "..", "..", "public", "thumbnails");
   if (!existsSync(thumbnailPath)) mkdirSync(thumbnailPath);
@@ -28,4 +28,14 @@ const generateThumbnail = async (pdfFilePath: string) => {
   return thumbnailFilePathRelative;
 };
 
-export default generateThumbnail;
+export const deleteThumbnail = async (thumbnailFilePath: string) => {
+  thumbnailFilePath = join(__dirname, "..", "..", "public", thumbnailFilePath);
+  unlink(thumbnailFilePath, (err) => {
+    if (err) return null;
+  });
+};
+
+export default {
+  generateThumbnail,
+  deleteThumbnail,
+};

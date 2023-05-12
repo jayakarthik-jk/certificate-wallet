@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { createCertificate, getCategories } from "../../Services/backend";
 
 import Datepicker from "react-tailwindcss-datepicker";
 import Upload from "../Common/Upload";
+import Loading from "../Common/Loading";
 
 function UploadPage() {
   const urlParams = new URLSearchParams(useLocation().search);
@@ -18,10 +19,13 @@ function UploadPage() {
   });
   const [file, setFile] = useState();
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoading(true);
       const categories = await getCategories();
+      setLoading(false);
       if (categories instanceof Error) return alert(categories.message);
       setCategories(categories);
       let selectedCategory = categories.find((cat) => cat.id === categoryParam);
@@ -46,13 +50,14 @@ function UploadPage() {
     formData.append("categoryId", selectedCategory);
     formData.append("isImportant", isImportant);
     if (date.startDate) formData.append("expiresOn", date.startDate);
+    setLoading(true);
     const certificate = await createCertificate(formData);
+    setLoading(false);
     if (certificate instanceof Error) return alert(certificate.message);
-    alert("Certificate uploaded successfully");
     navigate("/");
   };
   return (
-    <div className="page upload-page upload-page-bg">
+    <div className="page upload-page upload-page-bg relative -top-16">
       <div className="flex flex-col w-1/2 gap-4 pb-24 items-center justify-around p-4 rounded-3xl">
         <h1 className="text-2xl text-[--primary-color]">Enter Details</h1>
         <div className="w-full flex items-center justify-between">
@@ -131,6 +136,7 @@ function UploadPage() {
           Sumbit
         </button>
       </div>
+      {loading && <Loading />}
     </div>
   );
 }

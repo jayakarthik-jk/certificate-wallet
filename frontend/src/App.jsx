@@ -11,15 +11,17 @@ import SideNavbar from "./Components/Common/SideNavbar";
 import { useUser } from "./Context/User";
 
 function App() {
-  const { user } = useUser();
+  const userContext = useUser();
   return (
     <>
-      {user && <SideNavbar />}
+      {userContext && userContext.user && <SideNavbar />}
       <main
-        className={`bg-[--bg-color] min-h-screen ${user ? "main px-8" : ""}`}
+        className={`bg-[--bg-color] min-h-screen ${
+          userContext && userContext.user ? "main px-8" : ""
+        }`}
       >
         <Routes>
-          {user ? (
+          {userContext && userContext.user ? (
             <>
               <Route path="/" element={<HomePage />} />
               <Route path="importants" element={<ImportantsPage />} />
