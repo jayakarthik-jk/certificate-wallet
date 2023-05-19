@@ -1,5 +1,5 @@
 export const CERTIFICATE_WALLET_BACKEND_URL =
-  "https://certificate-wallet-backend.onrender.com/";
+  "https://certificate-wallet-backend.onrender.com";
 
 async function post(url, body) {
   try {
