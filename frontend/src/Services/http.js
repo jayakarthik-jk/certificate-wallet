@@ -1,4 +1,9 @@
-export const CERTIFICATE_WALLET_BACKEND_URL = "http://localhost:5000"; // process?.env?.CERTIFICATE_WALLET_BACKEND_URL
+if (!process.env.CERTIFICATE_WALLET_BACKEND_URL) {
+  process.exit(1);
+}
+
+export const CERTIFICATE_WALLET_BACKEND_URL =
+  process.env.CERTIFICATE_WALLET_BACKEND_URL;
 
 async function post(url, body) {
   try {
