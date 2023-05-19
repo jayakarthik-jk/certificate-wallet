@@ -1,9 +1,5 @@
-if (!process.env.CERTIFICATE_WALLET_BACKEND_URL) {
-  process.exit(1);
-}
-
 export const CERTIFICATE_WALLET_BACKEND_URL =
-  process.env.CERTIFICATE_WALLET_BACKEND_URL;
+  "https://certificate-wallet-backend.onrender.com/";
 
 async function post(url, body) {
   try {
