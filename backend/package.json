@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "npm i; npx prisma generate; apt-get install imagemagick; apt-get install ghostscript; npm run build",
+    "build": "npm i; npx prisma generate; tsc -p .",
     "start": "node ./dist/index.js"
   },
   "keywords": [],
